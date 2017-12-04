@@ -3,6 +3,13 @@ Checkconfig 4 (v1.0) - Retrieve UIM Configuration
 
 This probe is built on top of the latest Perluim 4.x version (but many methods have been customised).
 
+# Requirement 
+- SQL Server
+
+# How to install
+
+- Create SQL tables (with the SQL Script create_tables.sql) 
+
 # Roadmap V1.1
 
 - Complete SQL Tables structure with strict type!
