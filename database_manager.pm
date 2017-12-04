@@ -106,7 +106,7 @@ sub updateRobot {
         $this->{'robot_fk'}->{$robot->{name}} = $id;
     }
     else {
-        $sth = $DB->prepare("INSERT $TableName{robot} Audit_Robots (hub_id,domain,name,status,ip,version,origin) VALUES (?,?,?,?,?,?,?)");
+        $sth = $DB->prepare("INSERT $TableName{robot} (hub_id,domain,name,status,ip,version,origin) VALUES (?,?,?,?,?,?,?)");
         $sth->execute(
             $hubid,
             $robot->{domain},
