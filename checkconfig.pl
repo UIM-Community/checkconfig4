@@ -197,6 +197,7 @@ sub parseCfg {
             if($lastChar ne "/") {
                 $tmpPattern = "$pattern/";
             }
+            $tmpPattern =~ s/\\/#/g;
 
             my ($KeyArray) = cfgKeyList($CFG, $pattern);
             foreach my $keyName (@{$KeyArray}) {
@@ -212,6 +213,7 @@ sub parseCfg {
             # Handle Sections
             my ($SectionArray) = cfgSectionList($CFG, $pattern);
             V1: foreach my $sectionName (@{$SectionArray}) {
+                
                 my ($ARR) = cfgKeyList($CFG, $sectionName);
                 if($select_count > 0) {
                     my $match_count = 0;
@@ -226,9 +228,11 @@ sub parseCfg {
                     }
                     next V1 if $match_count != $select_count;
                 }
+                my $tmpSectionName = $sectionName;
+                $tmpSectionName =~ s/\\/#/g;
                 foreach my $keyName (@{$ARR}) {
                     my $keyValue = cfgKeyRead($CFG, $sectionName, $keyName) || '';
-                    $Cursor->updateProbeConfiguration($probeName, $robotName, "$sectionName/$keyName", $keyValue);
+                    $Cursor->updateProbeConfiguration($probeName, $robotName, "$tmpSectionName/$keyName", $keyValue);
                 }
             }
 
