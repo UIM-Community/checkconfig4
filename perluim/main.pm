@@ -78,7 +78,7 @@ sub getLocalHub {
 }
 
 sub getArrayHubs {
-    my ($self,$hubADDR) = @_;
+    my ($self,$hubADDR,$hubdomain) = @_;
     my $focus_hubADDR = $hubADDR || "hub";
     my $PDS = pdsCreate();
     my ($RC,$NMS_RES) = nimNamedRequest("$focus_hubADDR","gethubs",$PDS,10);
@@ -88,6 +88,9 @@ sub getArrayHubs {
         my @Hubslist = ();
         for( my $count = 0; my $HUBNFO = $HUBS_PDS->getTable("hublist",PDS_PDS,$count); $count++) {
             my $HUB = new perluim::hub($HUBNFO);
+            if(defined($hubdomain)) {
+                next if $HUB->{domain} ne $hubdomain;
+            }
             push(@Hubslist,$HUB);
         }
         return $RC,@Hubslist;

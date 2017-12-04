@@ -93,10 +93,10 @@ if($rc_getNimsoftDomain != NIME_OK) {
 }
 $Console->log(3,"hub domain => $nimDomain");
 my $UIM = new perluim::main($nimDomain);
-$Console->cleanDirectory($STR_OutputDir,$INT_OutputMaxTime);
 my $date = perluim::utils::getDate();
 perluim::utils::createDirectory("$STR_OutputDir/$date");
 my $outputDir = "$STR_OutputDir/$date";
+$Console->cleanDirectory($STR_OutputDir,$INT_OutputMaxTime);
 
 # Manage Threads
 my $robotsQueue = Thread::Queue->new();
@@ -214,7 +214,7 @@ sub parseCfg {
 
 # Main script!
 sub checkconfig {
-    my ($RC,@Hubs) = $UIM->getArrayHubs();
+    my ($RC,@Hubs) = $UIM->getArrayHubs(undef,$nimDomain);
     if($RC != NIME_OK) {
         $Console->log(0, "Failed to get hubslist. Returned Nimsoft Code => $RC");
         return;
