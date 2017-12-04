@@ -9,6 +9,7 @@ This probe is built on top of the latest Perluim 4.x version (but many methods h
 # How to install
 
 - Create SQL tables (with the SQL Script create_tables.sql) 
+- Update Nimsoft Perllib "**Lib**" path at the beginning of checkconfig.pl 
 
 # Roadmap V1.1
 
