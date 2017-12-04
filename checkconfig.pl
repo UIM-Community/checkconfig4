@@ -28,6 +28,12 @@ my $STR_OutputDir       = $CFG->{"setup"}->{"output_dir"} || "output";
 my $INT_OutputMaxTime   = $CFG->{"setup"}->{"output_maxtime"} || 345600;
 my $INT_Loglevel        = $CFG->{"setup"}->{"loglevel"} || 5;
 my $STR_Logfile         = $CFG->{"setup"}->{"logfile"} || "checkconfig";
+my $STR_ExcludeProbes   = $CFG->{"setup"}->{"exclude_probes"};
+my %ExcludesProbes      = ();
+if(defined($STR_ExcludeProbes)) {
+    %ExcludesProbes = map { $_ => 1 } split(',', $STR_ExcludeProbes);
+}
+$STR_ExcludeProbes = undef;
 
 my %ParsingRules        = ();
 foreach my $probeName (keys $CFG->{"cfg_monitoring"}) {
@@ -50,13 +56,7 @@ my $Console = new perluim::logger({
 $SIG{__DIE__} = \&scriptDieHandler;
 
 # login to the hub
-if(defined($STR_Login) && defined($STR_Password)) {
-    my ($rc) = nimLogin("$STR_Login","$STR_Password");
-    if($rc != NIME_OK) {
-        $Console->log(0,"Failed to authenticate Checkconfig to the hub with login: $STR_Login and password: $STR_Password! Returned Nimsoft Code => $rc");
-        goto Terminated;
-    }
-}
+nimLogin("$STR_Login","$STR_Password") if defined($STR_Login) && defined($STR_Password);
 $STR_Login = undef;
 $STR_Password = undef;
 
@@ -122,8 +122,9 @@ my @robots = ();
 # Die handler
 sub scriptDieHandler {
     my ($err) = @_; 
+    $Console->log(0, "Criticial error handled!");
     $Console->log(0, $err);
-    exit(1);
+    goto Terminated;
 }
 
 # Get robots from hubs
@@ -167,6 +168,7 @@ sub getProbeConfiguration {
         parseCfg($Cursor, 'robot', $robot->{name}, "$dirPath/robot.cfg") if exists $ParsingRules{'robot'};
         return;
     }
+    return if exists $ExcludesProbes{$probe->{name}};
     my ($RC) = $probe->getCfg($dirPath);
     if($RC != NIME_OK) {
         $Console->log(4,"Failed to get cfg of $probe->{name} on robot $robot->{name}, Returned Nimsoft Code => $RC");

@@ -85,7 +85,7 @@ sub log {
 	if(not defined($loglevel)) {
 		$loglevel = 3;
 	}
-	if($loglevel <= $self->{loglevel} || $loglevel == 5 || $loglevel == 4) {
+	if($loglevel <= $self->{loglevel}) {
 		my $date = getDate();
 		my $filehandler = $self->{_fh};
 		print $filehandler "$date $loglevel_label{$loglevel} - $logmsg\n";
